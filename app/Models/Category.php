@@ -8,14 +8,14 @@ class Category extends Model
 {
     protected $table = 'categories';
 
-    protected $primaryKey = 'category_id';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'category_name',
     ];
     public function tasks()
     {
-        return $this->hasMany(Task::class, 'category_id', 'category_id');
+        return $this->hasMany(Task::class, 'category_id', 'id');
     }
 
     public function user()
