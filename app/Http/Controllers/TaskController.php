@@ -40,7 +40,7 @@ class TaskController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'due_date' => 'nullable|date',
-            'status' => 'required|in:pending,completed,in-progress',
+            'status' => 'required|in:pending,completed,in_progress',
             'category_id' => 'required|exists:categories,id',
         ]);
 

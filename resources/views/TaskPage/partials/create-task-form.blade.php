@@ -28,7 +28,7 @@
             <select id="status" name="status"
                 class="status-select border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full">
                 <option value="" disabled selected>{{ __('Select a status') }}</option>
-                <option value="in-progress" class="text-yellow-500">{{ __('In Progress') }}</option>
+                <option value="in_progress" class="text-yellow-500">{{ __('In Progress') }}</option>
                 <option value="completed" class="text-green-500">{{ __('Completed') }}</option>
                 <option value="pending" class="text-red-500">{{ __('Pending') }}</option>
             </select>
