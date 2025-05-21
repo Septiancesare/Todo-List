@@ -16,7 +16,7 @@ class TaskController extends Controller
         $tasks = Task::all();
 
         // Return the view with the tasks data
-        return view('tasks.index', compact('tasks'));
+        return view('dashboard', compact('tasks'));
     }
 
     public function create()
@@ -35,8 +35,6 @@ class TaskController extends Controller
 
         // get all categories
 
-
-
         // Validate and store the new task
         $request->validate([
             'title' => 'required|string|max:255',
@@ -52,10 +50,10 @@ class TaskController extends Controller
         $task->due_date = $request->input('due_date');
         $task->status = $request->input('status');
         $task->category_id = $request->input('category_id');
-        $task->user_id = $user->id; 
+        $task->user_id = $user->id;
         $task->save();
 
-        return redirect()->route('dashboard')->with('success', 'Task created successfully.');
+        return redirect()->route('task.index')->with('success', 'Task created successfully.');
     }
 
     public function edit(Task $task)
@@ -63,6 +61,7 @@ class TaskController extends Controller
         // Return the view to edit a specific task
         return view('tasks.edit', compact('task'));
     }
+
     public function show(Task $task)
     {
         // Return the view to show a specific task
