@@ -59,8 +59,26 @@ class TaskController extends Controller
     public function edit(Task $task)
     {
         // Return the view to edit a specific task
-        return view('tasks.edit', compact('task'));
+        return view('TaskPage.updateTask', compact('task'));
     }
+
+    public function update(Request $request, Task $task)
+    {
+        // Validate and update the task
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date' => 'nullable|date',
+            'status' => 'required|in:pending,completed,in_progress',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $task->update($request->all());
+
+        return redirect()->route('task.index')->with('success', 'Task updated successfully.');
+    }
+
+    
 
     public function show(Task $task)
     {
