@@ -1,14 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
             {{ __('Create Task') }}
         </h2>
     </x-slot>
 
-    <div class="py-4 ">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg justify-center">
-                <div class="">
+    <div class="py-6">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
                     @include('TaskPage.partials.create-task-form')
                 </div>
             </div>
