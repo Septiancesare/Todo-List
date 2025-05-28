@@ -32,10 +32,13 @@
                                             </div>
                                         </td>
                                         <td class="py-3 px-4">
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                                {{ $task->status }}
-                                            </span>
+                                            @if($task->status == 'completed')
+                                                <div class="badge badge-soft badge-success">{{ $task->status }}</div>
+                                            @elseif($task->status == 'in_progress')
+                                                <div class="badge badge-soft badge-warning">{{ $task->status }}</div>
+                                            @else
+                                                <div class="badge badge-soft badge-error">{{ $task->status }}</div>
+                                            @endif
                                         </td>
                                         <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
                                             {{ $task->due_date }}
