@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/task/{task}', [TaskController::class, 'update'])->name('task.update');
     Route::put('/task/{task}', [TaskController::class, 'update'])->name('task.update');
     Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
+    
     Route::get('/dashboard', [TaskController::class, 'index'])->name('task.index');
 });
 

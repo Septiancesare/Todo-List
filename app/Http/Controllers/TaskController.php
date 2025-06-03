@@ -13,7 +13,14 @@ class TaskController extends Controller
     public function index()
     {
         // Fetch all tasks from the database
-        $tasks = Task::all();
+
+        $search = request('search');
+        $tasks = Task::when($search, function ($query) use ($search) {
+            $query->where('title', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%');
+        })
+            ->latest()
+            ->get();
 
         // Return the view with the tasks data
         return view('dashboard', compact('tasks'));
@@ -58,7 +65,7 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-     
+
         $categories = Category::all();
 
         return view('TaskPage.updateTask', compact('task', 'categories'));
@@ -78,6 +85,14 @@ class TaskController extends Controller
         $task->update($request->all());
 
         return redirect()->route('task.index')->with('success', 'Task updated successfully.');
+    }
+
+    public function destroy(Task $task)
+    {
+        // Delete the task
+        $task->delete();
+
+        return redirect()->route('task.index')->with('success', 'Task deleted successfully.');
     }
 
 
