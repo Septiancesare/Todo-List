@@ -12,10 +12,13 @@ class TaskController extends Controller
 {
     public function index()
     {
-        // Fetch all tasks from the database
-        $tasks = Task::all();
+        $user = Auth::user();
+        if($user->hasRole('admin')) {
+            $tasks = Task::all();
+        } else {
+            $tasks = Task::where('user_id', $user->id)->get();
+        }
 
-        // Return the view with the tasks data
         return view('dashboard', compact('tasks'));
     }
 

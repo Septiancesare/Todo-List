@@ -7,11 +7,56 @@
 
     <div class="py-10">
         <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-2xl font-bold mb-6">Category</h1>
+            <div class="flex overflow-x-auto pb-4 space-x-4">
+                <div class="card bg-error text-error-content w-80 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Tugas Matematika</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-success text-success-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-error text-error-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
             <div class="bg-base-100 shadow rounded-lg p-6">
-                
                 {{-- Add Task Button --}}
-                <div class="mb-4 flex justify-end">
-                    <a href="{{ route('task.create') }}" class="btn btn-primary gap-2">
+                <div class="mb-4 flex justify-center items-center">
+                    <div></div>
+                    <h1 class="text-3xl font-bold mb-8 mt-10 text-center">My Tasks</h1>
+                    <a href="{{ route('task.create') }}" class="btn btn-primary gap-2 absolute right-32">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
