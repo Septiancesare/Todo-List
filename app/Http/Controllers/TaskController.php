@@ -13,14 +13,24 @@ class TaskController extends Controller
     public function index()
     {
         // Fetch all tasks from the database
-
+        $user = Auth::user();
         $search = request('search');
-        $tasks = Task::when($search, function ($query) use ($search) {
-            $query->where('title', 'like', '%' . $search . '%')
-                ->orWhere('description', 'like', '%' . $search . '%');
-        })
-            ->latest()
-            ->get();
+
+        if($user->hasRole('admin')) {
+            $tasks = Task::when($search, function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            })
+                ->latest()
+                ->get();
+        } else {
+            $tasks = Task::where('user_id', $user->id)->when($search, function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                    ->orWhere('description', 'like', '%' . $search . '%');
+            })
+                ->latest()
+                ->get();
+        }
 
         return view('dashboard', compact('tasks'));
     }
