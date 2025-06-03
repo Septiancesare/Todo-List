@@ -65,7 +65,24 @@
                         Add New Task
                     </a>
                 </div>
-
+ <!-- Search Form -->
+                    <div class="mb-6">
+                        <form method="GET" action="{{ route('task.index') }}" class="flex items-center gap-4">
+                            <div class="flex-1">
+                                <x-text-input id="search" name="search" type="text" class="w-full"
+                                    placeholder="Search tasks..." value="{{ request('search') }}" />
+                            </div>
+                            <x-primary-button type="submit">
+                                Search
+                            </x-primary-button>
+                            @if (request('search'))
+                                <a href="{{ route('task.index') }}"
+                                    class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                    Clear
+                                </a>
+                            @endif
+                        </form>
+                    </div>
                 {{-- Task Table --}}
                 <div class="overflow-x-auto">
                     <table class="table table-zebra w-full">
@@ -95,30 +112,34 @@
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</td>
                                     <td class="text-right">
-                                        <div class="flex justify-end gap-2">
-                                            <a href="{{ route('task.create', $task->id) }}" class="btn btn-sm btn-outline btn-info">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
-                                                     viewBox="0 0 20 20">
-                                                    <path
-                                                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                                </svg>
-                                            </a>
-                                            <form action="{{ route('task.create', $task->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline btn-error">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                         fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fill-rule="evenodd"
-                                                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 
-                                                              2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 
-                                                              1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 
-                                                              0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                              clip-rule="evenodd"/>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <a href="{{ route('task.edit', $task->task_id) }}">
+                                                    <button
+                                                        class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            viewBox="0 0 20 20" fill="currentColor">
+                                                            <path
+                                                                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                                        </svg>
+                                                    </button>
+                                                </a>
+                                                <a href="#"
+                                                    onclick="confirmDelete('{{ route('task.destroy', $task->task_id) }}', '{{ $task->title }}')">
+                                                    <form id="delete-form-{{ $task->task_id }}" method="POST"
+                                                        action="{{ route('task.destroy', $task->task_id) }}"
+                                                        class="hidden">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                    <button
+                                                        class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </a>
                                     </td>
                                 </tr>
                             @empty

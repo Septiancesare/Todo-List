@@ -12,12 +12,15 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        if($user->hasRole('admin')) {
-            $tasks = Task::all();
-        } else {
-            $tasks = Task::where('user_id', $user->id)->get();
-        }
+        // Fetch all tasks from the database
+
+        $search = request('search');
+        $tasks = Task::when($search, function ($query) use ($search) {
+            $query->where('title', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%');
+        })
+            ->latest()
+            ->get();
 
         return view('dashboard', compact('tasks'));
     }
@@ -61,9 +64,37 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        // Return the view to edit a specific task
-        return view('tasks.edit', compact('task'));
+
+        $categories = Category::all();
+
+        return view('TaskPage.updateTask', compact('task', 'categories'));
     }
+
+    public function update(Request $request, Task $task)
+    {
+        // Validate and update the task
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'due_date' => 'nullable|date',
+            'status' => 'required|in:pending,completed,in_progress',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $task->update($request->all());
+
+        return redirect()->route('task.index')->with('success', 'Task updated successfully.');
+    }
+
+    public function destroy(Task $task)
+    {
+        // Delete the task
+        $task->delete();
+
+        return redirect()->route('task.index')->with('success', 'Task deleted successfully.');
+    }
+
+
 
     public function show(Task $task)
     {
