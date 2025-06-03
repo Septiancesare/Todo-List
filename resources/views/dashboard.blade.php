@@ -56,6 +56,7 @@
                 <div class="mb-4 flex justify-center items-center">
                     <div></div>
                     <h1 class="text-3xl font-bold mb-8 mt-10 text-center">My Tasks</h1>
+                    @role('user')
                     <a href="{{ route('task.create') }}" class="btn btn-primary gap-2 absolute right-32">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                              viewBox="0 0 24 24" stroke="currentColor">
@@ -64,6 +65,7 @@
                         </svg>
                         Add New Task
                     </a>
+                    @endrole
                 </div>
  <!-- Search Form -->
                     <div class="mb-6">
@@ -89,6 +91,9 @@
                         <thead>
                             <tr>
                                 <th>Task</th>
+                                @role('admin')
+                                    <th>User</th>
+                                @endrole
                                 <th>Status</th>
                                 <th>Due Date</th>
                                 <th class="text-right">Actions</th>
@@ -101,6 +106,12 @@
                                         <div class="font-semibold">{{ $task->title }}</div>
                                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->description }}</div>
                                     </td>
+                                    @role('admin')
+                                        <td>
+                                            <div class="font-semibold">{{ $task->user->name }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->user->email }}</div>
+                                        </td>
+                                    @endrole
                                     <td>
                                         @if($task->status == 'completed')
                                             <div class="badge badge-success">{{ $task->status }}</div>
@@ -112,7 +123,8 @@
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</td>
                                     <td class="text-right">
-                                        <a href="{{ route('task.edit', $task->task_id) }}">
+                                                @role('user')
+                                                <a href="{{ route('task.edit', $task->task_id) }}">
                                                     <button
                                                         class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
@@ -122,6 +134,7 @@
                                                         </svg>
                                                     </button>
                                                 </a>
+                                                @endrole
                                                 <a href="#"
                                                     onclick="confirmDelete('{{ route('task.destroy', $task->task_id) }}', '{{ $task->title }}')">
                                                     <form id="delete-form-{{ $task->task_id }}" method="POST"
