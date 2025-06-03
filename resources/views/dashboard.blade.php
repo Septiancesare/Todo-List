@@ -9,6 +9,25 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <!-- Search Form -->
+                    <div class="mb-6">
+                        <form method="GET" action="{{ route('task.index') }}" class="flex items-center gap-4">
+                            <div class="flex-1">
+                                <x-text-input id="search" name="search" type="text" class="w-full"
+                                    placeholder="Search tasks..." value="{{ request('search') }}" />
+                            </div>
+                            <x-primary-button type="submit">
+                                Search
+                            </x-primary-button>
+                            @if (request('search'))
+                                <a href="{{ route('task.index') }}"
+                                    class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                    Clear
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+
                     <div class="overflow-x-auto">
                         <table class="w-full whitespace-nowrap">
                             <thead>
@@ -32,7 +51,7 @@
                                             </div>
                                         </td>
                                         <td class="py-3 px-4">
-                                            @if($task->status == 'completed')
+                                            @if ($task->status == 'completed')
                                                 <div class="badge badge-soft badge-success">{{ $task->status }}</div>
                                             @elseif($task->status == 'in_progress')
                                                 <div class="badge badge-soft badge-warning">{{ $task->status }}</div>
@@ -55,15 +74,24 @@
                                                         </svg>
                                                     </button>
                                                 </a>
-                                                <button
-                                                    class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
-                                                        viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd"
-                                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                                                            clip-rule="evenodd" />
-                                                    </svg>
-                                                </button>
+                                                <a href="#"
+                                                    onclick="confirmDelete('{{ route('task.destroy', $task->task_id) }}', '{{ $task->title }}')">
+                                                    <form id="delete-form-{{ $task->task_id }}" method="POST"
+                                                        action="{{ route('task.destroy', $task->task_id) }}"
+                                                        class="hidden">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+                                                    <button
+                                                        class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5"
+                                                            viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd"
+                                                                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                                                clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>
@@ -94,3 +122,47 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    function confirmDelete(url, taskTitle) {
+        if (confirm(`Apakah yakin menghapus task "${taskTitle}"?`)) {
+            document.getElementById(`delete-form-${url.split('/').pop()}`).submit();
+        }
+    }
+</script>
+
+<script>
+    // Debounce function to limit how often the search executes
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    // Live search functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search');
+        const taskRows = document.querySelectorAll('tbody tr');
+
+        if (searchInput) {
+            searchInput.addEventListener('input', debounce(function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+
+                taskRows.forEach(row => {
+                    const taskTitle = row.querySelector('td:first-child .font-medium')
+                        .textContent.toLowerCase();
+                    const taskDesc = row.querySelector('td:first-child .text-sm')
+                        .textContent.toLowerCase();
+
+                    if (taskTitle.includes(searchTerm) || taskDesc.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            }, 300));
+        }
+    });
+</script>
