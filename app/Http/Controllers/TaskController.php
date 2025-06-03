@@ -58,8 +58,10 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        // Return the view to edit a specific task
-        return view('TaskPage.updateTask', compact('task'));
+     
+        $categories = Category::all();
+
+        return view('TaskPage.updateTask', compact('task', 'categories'));
     }
 
     public function update(Request $request, Task $task)
@@ -78,7 +80,7 @@ class TaskController extends Controller
         return redirect()->route('task.index')->with('success', 'Task updated successfully.');
     }
 
-    
+
 
     public function show(Task $task)
     {
