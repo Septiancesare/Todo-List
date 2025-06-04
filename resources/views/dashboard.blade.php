@@ -1,15 +1,73 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="text-xl font-bold text-gray-800 dark:text-white">
             {{ __('Todo List Application') }}
         </h2>
     </x-slot>
 
     <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <!-- Search Form -->
+        <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-2xl font-bold mb-6">Category</h1>
+            <div class="flex overflow-x-auto pb-4 space-x-4">
+                <div class="card bg-error text-error-content w-80 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Tugas Matematika</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-success text-success-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-error text-error-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
+                <div class="card-body">
+                    <h2 class="card-title">Card title!</h2>
+                    <div class="card-actions justify-end">
+                    <button class="btn">Filter Tugas</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="bg-base-100 shadow rounded-lg p-6">
+                {{-- Add Task Button --}}
+                <div class="mb-4 flex justify-center items-center">
+                    <div></div>
+                    <h1 class="text-3xl font-bold mb-8 mt-10 text-center">My Tasks</h1>
+                    @role('user')
+                    <a href="{{ route('task.create') }}" class="btn btn-primary gap-2 absolute right-32">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Add New Task
+                    </a>
+                    @endrole
+                </div>
+ <!-- Search Form -->
                     <div class="mb-6">
                         <form method="GET" action="{{ route('task.index') }}" class="flex items-center gap-4">
                             <div class="flex-1">
@@ -27,43 +85,45 @@
                             @endif
                         </form>
                     </div>
-
-                    <div class="overflow-x-auto">
-                        <table class="w-full whitespace-nowrap">
-                            <thead>
-                                <tr
-                                    class="text-left font-medium text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-700">
-                                    <th class="pb-3 px-4">Task</th>
-                                    <th class="pb-3 px-4">Status</th>
-                                    <th class="pb-3 px-4">Due Date</th>
-                                    <th class="pb-3 px-4 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Showing Task using looping -->
-                                @foreach ($tasks as $task)
-                                    <tr
-                                        class="hover:bg-gray-50 dark:hover:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
-                                        <td class="py-3 px-4">
-                                            <div class="font-medium">{{ $task->title }}</div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                {{ $task->description }}
-                                            </div>
+                {{-- Task Table --}}
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                @role('admin')
+                                    <th>User</th>
+                                @endrole
+                                <th>Status</th>
+                                <th>Due Date</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($tasks as $task)
+                                <tr>
+                                    <td>
+                                        <div class="font-semibold">{{ $task->title }}</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->description }}</div>
+                                    </td>
+                                    @role('admin')
+                                        <td>
+                                            <div class="font-semibold">{{ $task->user->name }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->user->email }}</div>
                                         </td>
-                                        <td class="py-3 px-4">
-                                            @if ($task->status == 'completed')
-                                                <div class="badge badge-soft badge-success">{{ $task->status }}</div>
-                                            @elseif($task->status == 'in_progress')
-                                                <div class="badge badge-soft badge-warning">{{ $task->status }}</div>
-                                            @else
-                                                <div class="badge badge-soft badge-error">{{ $task->status }}</div>
-                                            @endif
-                                        </td>
-                                        <td class="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">
-                                            {{ $task->due_date }}
-                                        </td>
-                                        <td class="py-3 px-4 text-right">
-                                            <div class="flex justify-end space-x-2">
+                                    @endrole
+                                    <td>
+                                        @if($task->status == 'completed')
+                                            <div class="badge badge-success">{{ $task->status }}</div>
+                                        @elseif($task->status == 'in_progress')
+                                            <div class="badge badge-warning">{{ $task->status }}</div>
+                                        @else
+                                            <div class="badge badge-error">{{ $task->status }}</div>
+                                        @endif
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}</td>
+                                    <td class="text-right">
+                                                @role('user')
                                                 <a href="{{ route('task.edit', $task->task_id) }}">
                                                     <button
                                                         class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300">
@@ -74,6 +134,7 @@
                                                         </svg>
                                                     </button>
                                                 </a>
+                                                @endrole
                                                 <a href="#"
                                                     onclick="confirmDelete('{{ route('task.destroy', $task->task_id) }}', '{{ $task->title }}')">
                                                     <form id="delete-form-{{ $task->task_id }}" method="POST"
@@ -92,77 +153,18 @@
                                                         </svg>
                                                     </button>
                                                 </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Add New Task Button route to taskpage -->
-
-                    <div class="mt-6">
-                        <a href="{{ route('task.create') }}">
-                            <button
-                                class="inline-flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                Add New Task
-                            </button>
-                        </a>
-                    </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No tasks available.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
+
             </div>
         </div>
     </div>
 </x-app-layout>
-
-<script>
-    function confirmDelete(url, taskTitle) {
-        if (confirm(`Apakah yakin menghapus task "${taskTitle}"?`)) {
-            document.getElementById(`delete-form-${url.split('/').pop()}`).submit();
-        }
-    }
-</script>
-
-<script>
-    // Debounce function to limit how often the search executes
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
-    // Live search functionality
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('search');
-        const taskRows = document.querySelectorAll('tbody tr');
-
-        if (searchInput) {
-            searchInput.addEventListener('input', debounce(function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-
-                taskRows.forEach(row => {
-                    const taskTitle = row.querySelector('td:first-child .font-medium')
-                        .textContent.toLowerCase();
-                    const taskDesc = row.querySelector('td:first-child .text-sm')
-                        .textContent.toLowerCase();
-
-                    if (taskTitle.includes(searchTerm) || taskDesc.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            }, 300));
-        }
-    });
-</script>
