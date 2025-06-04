@@ -9,46 +9,22 @@
         <div class="max-w-7xl mx-auto px-4">
             <h1 class="text-2xl font-bold mb-6">Category</h1>
             <div class="flex overflow-x-auto pb-4 space-x-4">
-                <div class="card bg-error text-error-content w-80 flex-shrink-0">
-                <div class="card-body">
-                    <h2 class="card-title">Tugas Matematika</h2>
-                    <div class="card-actions justify-end">
-                    <button class="btn">Filter Tugas</button>
+                @foreach ($categories as $index => $category)
+                    @php
+                        $colors = ['bg-error', 'bg-warning', 'bg-success'];
+                        $textColors = ['text-error-content', 'text-warning-content', 'text-success-content'];
+                        $colorIndex = $index % count($colors);
+                    @endphp
+                    
+                    <div class="card {{ $colors[$colorIndex] }} {{ $textColors[$colorIndex] }} w-80 flex-shrink-0">
+                        <div class="card-body">
+                            <h2 class="card-title">{{ $category->category_name }}</h2>
+                            <div class="card-actions justify-end">
+                                <button class="btn">Filter Tugas</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                </div>
-                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
-                <div class="card-body">
-                    <h2 class="card-title">Card title!</h2>
-                    <div class="card-actions justify-end">
-                    <button class="btn">Filter Tugas</button>
-                    </div>
-                </div>
-                </div>
-                <div class="card bg-success text-success-content w-96 flex-shrink-0">
-                <div class="card-body">
-                    <h2 class="card-title">Card title!</h2>
-                    <div class="card-actions justify-end">
-                    <button class="btn">Filter Tugas</button>
-                    </div>
-                </div>
-                </div>
-                <div class="card bg-error text-error-content w-96 flex-shrink-0">
-                <div class="card-body">
-                    <h2 class="card-title">Card title!</h2>
-                    <div class="card-actions justify-end">
-                    <button class="btn">Filter Tugas</button>
-                    </div>
-                </div>
-                </div>
-                <div class="card bg-warning text-warning-content w-96 flex-shrink-0">
-                <div class="card-body">
-                    <h2 class="card-title">Card title!</h2>
-                    <div class="card-actions justify-end">
-                    <button class="btn">Filter Tugas</button>
-                    </div>
-                </div>
-                </div>
+                @endforeach
             </div>
 
             <div class="bg-base-100 shadow rounded-lg p-6">
