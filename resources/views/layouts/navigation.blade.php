@@ -16,6 +16,9 @@
                     <x-nav-link :href="route('task.index')" :active="request()->routeIs('task.index', 'task.create')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.index', 'category.create')">
+                        {{ __('Category') }}
+                    </x-nav-link>
                     @role('admin')
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index', 'users.edit', 'users.show')">
                             {{ __('User') }}
@@ -87,6 +90,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('task.index')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('category.index')" :active="request()->routeIs('category')">
+                {{ __('Category') }}
             </x-responsive-nav-link>
         </div>
 

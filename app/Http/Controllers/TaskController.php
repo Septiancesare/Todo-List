@@ -14,6 +14,7 @@ class TaskController extends Controller
     {
         $user = Auth::user();
         $search = request('search');
+        $categories = Category::all();
 
         if($user->hasRole('admin')) {
             $tasks = Task::when($search, function ($query) use ($search) {
@@ -22,6 +23,7 @@ class TaskController extends Controller
                     ->orWhere('user_name', 'like', '%' . $search . '%');
             })
                 ->with('user')
+                ->with('category')
                 ->latest()
                 ->get();
         } else {
@@ -29,11 +31,12 @@ class TaskController extends Controller
                 $query->where('title', 'like', '%' . $search . '%')
                     ->orWhere('description', 'like', '%' . $search . '%');
             })
+                ->with('category')
                 ->latest()
                 ->get();
         }
 
-        return view('dashboard', compact('tasks'));
+        return view('dashboard', compact('tasks', 'categories'));
     }
 
     public function create()
