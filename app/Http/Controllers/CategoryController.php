@@ -9,30 +9,27 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        return view('categories.index', compact('categories'));
-    }
+        $search = request()->input('search');
+        
+        $categories = Category::when($search, function($query) use ($search) {
+            return $query->where('category_name', 'like', '%'.$search.'%');
+        })->paginate(10);
 
-    public function create()
-    {
-        return view('categories.create');
+        return view('categories.index', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $request->validate(['name' => 'required']);
+        $request->validate(['category_name' => 'required']);
+        // dd($request->all());
         Category::create($request->all());
         return redirect()->route('category.index')->with('success', 'Category created successfully.');
     }
 
-    public function edit(Category $category)
-    {
-        return view('categories.edit', compact('category'));
-    }
-
     public function update(Request $request, Category $category)
     {
-        $request->validate(['name' => 'required']);
+        $request->validate(['category_name' => 'required']);
+        // dd($request->all());
         $category->update($request->all());
         return redirect()->route('category.index')->with('success', 'Category updated successfully.');
     }

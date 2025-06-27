@@ -24,6 +24,7 @@
                <!-- Filter and Search Section -->
                 <div class="flex flex-col sm:flex-row gap-4 mb-6">
                     <!-- Category Dropdown Filter -->
+                    @role('user')
                     <div class="w-full sm:w-64">
                         <label class="label">
                             <span class="label-text">Filter by Category</span>
@@ -46,6 +47,7 @@
                             </select>
                         </form>
                     </div>
+                    @endrole
 
                     <!-- Search Form -->
                     <div class="flex-1">
@@ -145,6 +147,9 @@
                                     </td>
                                     <td>
                                         <div class="flex justify-end gap-2">
+                                            <a href="{{ route('task.show', $task->task_id) }}" class="btn btn-sm">
+                                                View
+                                            </a>
                                             @role('user')
                                             <a href="{{ route('task.edit', $task->task_id) }}" class="btn btn-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

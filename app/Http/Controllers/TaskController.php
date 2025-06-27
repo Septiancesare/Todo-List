@@ -54,10 +54,8 @@ class TaskController extends Controller
 
     public function create()
     {
-        // Fetch all categories
         $categories = Category::all();
 
-        // Return the view to create a new task
         return view('TaskPage.createTask', compact('categories'));
     }
 
@@ -126,6 +124,6 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         // Return the view to show a specific task
-        return view('tasks.show', compact('task'));
+        return view('TaskPage.showTask', compact('task'));
     }
 }

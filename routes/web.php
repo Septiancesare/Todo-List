@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/task/{task}', [TaskController::class, 'destroy'])->name('task.destroy');
     
     Route::get('/dashboard', [TaskController::class, 'index'])->name('task.index');
+    Route::get('/task/{task}', [TaskController::class, 'show'])->name('task.show');
 
     Route::middleware('role:admin')->group(function () {
         Route::resource('users', UserController::class); 
@@ -37,14 +38,15 @@ Route::middleware('auth')->group(function () {
     
 
     Route::middleware('auth')->group(function () {
-    Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
-    Route::get('/category/create', [CategoryController::class, 'create'])->name('category.create');
-    Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store');
-    Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
-    Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
-    Route::patch('/category/{category}', [CategoryController::class, 'update'])->name('category.update');
-    Route::put('/category/{category}', [CategoryController::class, 'update'])->name('category.update');
-});
+        Route::get('/category', [CategoryController::class, 'index'])->name('category.index');
+        
+        Route::middleware('role:user')->group(function () {
+            Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store');
+            Route::put('/category/{category}', [CategoryController::class, 'update'])->name('category.update');
+        });
+        
+        Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    });
 });
 
 require __DIR__ . '/auth.php';
