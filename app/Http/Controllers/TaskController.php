@@ -10,41 +10,52 @@ use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
-    public function index()
+   public function index()
     {
         $user = Auth::user();
         $search = request('search');
-        $categories = Category::all();
+        $categoryFilter = request('category');
 
-        if($user->hasRole('admin')) {
-            $tasks = Task::when($search, function ($query) use ($search) {
-                $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%')
-                    ->orWhere('user_name', 'like', '%' . $search . '%');
-            })
-                ->with('user')
-                ->with('category')
-                ->latest()
-                ->get();
+        $query = Task::query();
+
+        if ($user->hasRole('admin')) {
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('description', 'like', '%' . $search . '%')
+                      ->orWhereHas('user', function($q) use ($search) {
+                          $q->where('name', 'like', '%' . $search . '%');
+                      });
+                });
+            }
         } else {
-            $tasks = Task::where('user_id', $user->id)->when($search, function ($query) use ($search) {
-                $query->where('title', 'like', '%' . $search . '%')
-                    ->orWhere('description', 'like', '%' . $search . '%');
-            })
-                ->with('category')
-                ->latest()
-                ->get();
+            $query->where('user_id', $user->id);
+            
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('title', 'like', '%' . $search . '%')
+                      ->orWhere('description', 'like', '%' . $search . '%');
+                });
+            }
         }
+
+        if ($categoryFilter) {
+            $query->where('category_id', $categoryFilter);
+        }
+
+        $tasks = $query->with(['user', 'category'])
+                     ->latest()
+                     ->get();
+
+        $categories = Category::all();
 
         return view('dashboard', compact('tasks', 'categories'));
     }
 
     public function create()
     {
-        // Fetch all categories
         $categories = Category::all();
 
-        // Return the view to create a new task
         return view('TaskPage.createTask', compact('categories'));
     }
 
@@ -113,6 +124,6 @@ class TaskController extends Controller
     public function show(Task $task)
     {
         // Return the view to show a specific task
-        return view('tasks.show', compact('task'));
+        return view('TaskPage.showTask', compact('task'));
     }
 }
