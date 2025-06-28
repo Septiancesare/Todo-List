@@ -48,6 +48,30 @@
                         </form>
                     </div>
                     @endrole
+                    <div class="w-full sm:w-64">
+                        <label class="label">
+                            <span class="label-text">Filter by Due Date</span>
+                        </label>
+                        <form method="GET" action="{{ route('task.index') }}" class="join w-full">
+                            <select 
+                                name="due_date"
+                                class="select select-bordered join-item w-full"
+                                onchange="this.form.submit()"
+                            >
+                                <option value="">All Dates</option>
+                                <option value="today" {{ request('due_date') == 'today' ? 'selected' : '' }}>Today</option>
+                                <option value="this_week" {{ request('due_date') == 'this_week' ? 'selected' : '' }}>This Week</option>
+                                <option value="next_week" {{ request('due_date') == 'next_week' ? 'selected' : '' }}>Next Week</option>
+                                <option value="overdue" {{ request('due_date') == 'overdue' ? 'selected' : '' }}>Overdue</option>
+                            </select>
+                            @if(request('category'))
+                                <input type="hidden" name="category" value="{{ request('category') }}">
+                            @endif
+                            @if(request('search'))
+                                <input type="hidden" name="search" value="{{ request('search') }}">
+                            @endif
+                        </form>
+                    </div>
 
                     <!-- Search Form -->
                     <div class="flex-1">
@@ -113,7 +137,7 @@
                                             <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->user->email }}</div>
                                         </td>
                                     @endrole
-                                    <td>
+                                    <td class="whitespace-nowrap">
                                         @if($task->status == 'completed')
                                             <span class="badge badge-success gap-2 w-full">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

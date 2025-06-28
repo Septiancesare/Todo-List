@@ -73,6 +73,9 @@
                         <thead class="bg-gray-100 dark:bg-gray-700">
                             <tr>
                                 <th class="whitespace-nowrap">Category Name</th>
+                                @role('admin')
+                                    <th class="whitespace-nowrap">User</th>
+                                @endrole
                                 <th class="whitespace-nowrap hidden sm:table-cell">Created At</th>
                                 <th class="whitespace-nowrap hidden md:table-cell">Updated At</th>
                                 <th class="whitespace-nowrap">Actions</th>
@@ -82,13 +85,16 @@
                             @forelse ($categories as $category)
                                 <tr>
                                     <td class="whitespace-nowrap">{{ $category->category_name }}</td>
+                                    @role('admin')
+                                        <th class="whitespace-nowrap">{{ $category->user->name }}</th>
+                                    @endrole
                                     <td class="whitespace-nowrap hidden sm:table-cell">{{ $category->created_at->format('d M Y') }}</td>
                                     <td class="whitespace-nowrap hidden md:table-cell">{{ $category->updated_at->format('d M Y') }}</td>
                                     <td class="whitespace-nowrap">
                                         <div class="flex flex-wrap gap-1 sm:gap-2">
                                             @role('user')
                                             <button
-                                                onclick="openEditModal('{{ $category->id }}', '{{ $category->category_name }}')"
+                                                onclick="openEditModal('{{ $category->id }}', '{{ addslashes($category->category_name) }}')"
                                                 class="btn btn-sm btn-warning"
                                             >
                                                 Edit
@@ -130,11 +136,13 @@
                 <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
             </div>
 
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
             <!-- Modal content -->
             <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                 <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4">Edit Category</h3>
-                    <form id="edit-form" action="{{ route('category.update', $category) }}" method="POST" class="space-y-4">
+                    <form id="edit-form" method="POST" class="space-y-4">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="category_id" id="modal-category-id">
@@ -164,7 +172,8 @@
             document.getElementById('modal-category-id').value = id;
             document.getElementById('modal-category-name').value = name;
             
-            document.getElementById('edit-form').action = `/category/${id}`;
+            const form = document.getElementById('edit-form');
+            form.action = `/category/${id}`;
             
             document.getElementById('edit-modal').classList.remove('hidden');
             document.body.classList.add('overflow-hidden');
@@ -177,6 +186,12 @@
 
         document.getElementById('edit-modal').addEventListener('click', function(e) {
             if (e.target === this) {
+                closeEditModal();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
                 closeEditModal();
             }
         });

@@ -15,6 +15,7 @@ class TaskController extends Controller
         $user = Auth::user();
         $search = request('search');
         $categoryFilter = request('category');
+        $dueDateFilter = request('due_date'); // Add this line
 
         $query = Task::query();
 
@@ -22,10 +23,10 @@ class TaskController extends Controller
             if ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('title', 'like', '%' . $search . '%')
-                      ->orWhere('description', 'like', '%' . $search . '%')
-                      ->orWhereHas('user', function($q) use ($search) {
-                          $q->where('name', 'like', '%' . $search . '%');
-                      });
+                    ->orWhere('description', 'like', '%' . $search . '%')
+                    ->orWhereHas('user', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    });
                 });
             }
         } else {
@@ -34,7 +35,7 @@ class TaskController extends Controller
             if ($search) {
                 $query->where(function($q) use ($search) {
                     $q->where('title', 'like', '%' . $search . '%')
-                      ->orWhere('description', 'like', '%' . $search . '%');
+                    ->orWhere('description', 'like', '%' . $search . '%');
                 });
             }
         }
@@ -43,9 +44,27 @@ class TaskController extends Controller
             $query->where('category_id', $categoryFilter);
         }
 
+        // Add due date filter logic
+        if ($dueDateFilter) {
+            switch ($dueDateFilter) {
+                case 'today':
+                    $query->whereDate('due_date', today());
+                    break;
+                case 'this_week':
+                    $query->whereBetween('due_date', [now()->startOfWeek(), now()->endOfWeek()]);
+                    break;
+                case 'next_week':
+                    $query->whereBetween('due_date', [now()->addWeek()->startOfWeek(), now()->addWeek()->endOfWeek()]);
+                    break;
+                case 'overdue':
+                    $query->where('due_date', '<', now())->where('status', '!=', 'completed');
+                    break;
+            }
+        }
+
         $tasks = $query->with(['user', 'category'])
-                     ->latest()
-                     ->get();
+                    ->latest()
+                    ->get();
 
         $categories = Category::all();
 
